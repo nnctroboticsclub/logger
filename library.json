@@ -1,0 +1,24 @@
+{
+  "name": "logger",
+  "version": "0.1.0",
+  "description": "A C++ library for logging text and numbers.",
+  "keywords": [
+    "C++",
+    "library",
+    "robotics",
+    "logging"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nnctroboticsclub/logger.git"
+  },
+  "authors": [
+    {
+      "name": "Yunoshin Tani",
+      "email": "taniyunoshin@gmail.com",
+      "url": "https://github.com/YunoshinTani"
+    }
+  ],
+  "frameworks" : ["stm32cube", "mbed"],
+  "platforms" : ["ststm32", "native"]
+}
