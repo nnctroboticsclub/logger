@@ -19,6 +19,6 @@
       "url": "https://github.com/YunoshinTani"
     }
   ],
-  "frameworks" : ["stm32cube", "mbed"],
+  "frameworks" : ["*"],
   "platforms" : ["ststm32", "native"]
 }
