@@ -79,17 +79,3 @@ void Logger::PrintValueWithColoredNumbers(const char* category,
 bool Logger::IsDigit(char chr) {
   return chr >= '0' && chr <= '9';
 }
-
-// 警告の抑制
-extern "C" {
-int _getpid(void) {  // NOLINT
-  return 1;
-}
-
-int _kill(int pid, int sig) {  // NOLINT
-  (void)pid;
-  (void)sig;
-  errno = EINVAL;
-  return -1;
-}
-}
