@@ -1,37 +1,37 @@
 #include "logger.h"
 
-#include <cerrno>
+#include <cstdio>
 
 void Logger::Log(const char* category, const char* format, ...) {
-  va_list args;
+  va_list args{};
   va_start(args, format);
   PrintWithCategory(kColorWhite, category, format, args);
   va_end(args);
 }
 
 void Logger::Info(const char* category, const char* format, ...) {
-  va_list args;
+  va_list args{};
   va_start(args, format);
   PrintWithCategory(kColorCyan, category, format, args);
   va_end(args);
 }
 
 void Logger::Warn(const char* category, const char* format, ...) {
-  va_list args;
+  va_list args{};
   va_start(args, format);
   PrintWithCategory(kColorYellow, category, format, args);
   va_end(args);
 }
 
 void Logger::Error(const char* category, const char* format, ...) {
-  va_list args;
+  va_list args{};
   va_start(args, format);
   PrintWithCategory(kColorRed, category, format, args);
   va_end(args);
 }
 
 void Logger::Value(const char* category, const char* format, ...) {
-  va_list args;
+  va_list args{};
   va_start(args, format);
   PrintValueWithColoredNumbers(category, format, args);
   va_end(args);
@@ -50,26 +50,36 @@ void Logger::PrintValueWithColoredNumbers(const char* category,
   char buffer[256];
   vsnprintf(buffer, sizeof(buffer), format, args);
   printf("[%s] > ", category);
-  bool in_number = false;
+  bool in_color = false;
+  bool color_started = false;
   for (int i = 0; buffer[i] != '\0'; i++) {
     char chr = buffer[i];
-    bool is_digit_or_hex = IsDigit(chr) || (chr >= 'a' && chr <= 'f') ||
-                           (chr >= 'A' && chr <= 'F') || chr == 'x' ||
-                           chr == 'X';
-    if (!in_number &&
-        (IsDigit(chr) ||
-         (chr == '0' && (buffer[i + 1] == 'x' || buffer[i + 1] == 'X')))) {
-      printf("%s", kColorGreen);
-      in_number = true;
+    if (!in_color && chr == ':') {
+      printf("%c", chr);
+      in_color = true;
+      color_started = false;
+      continue;
     }
-    if (in_number && !is_digit_or_hex) {
-      printf("%s", kColorReset);
-      in_number = false;
+    if (in_color && chr == ',') {
+      if (color_started) {
+        printf("%s", kColorReset);
+      }
+      in_color = false;
+      printf("%c", chr);
+      continue;
     }
-    printf("%c", chr);
+    if (in_color) {
+      if (!color_started) {
+        printf("%s", kColorGreen);
+        color_started = true;
+      }
+      printf("%c", chr);
+    } else {
+      printf("%c", chr);
+    }
   }
 
-  if (in_number) {
+  if (color_started) {
     printf("%s", kColorReset);
   }
   printf("\n");
